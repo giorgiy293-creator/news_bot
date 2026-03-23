@@ -1,29 +1,24 @@
 import asyncio
 from telegram import Bot, Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters
-from telegram.request import HTTPXRequest
+from telegram.ext import Application, MessageHandler, filters
 
 TOKEN = "8452923553:AAFMZ1tNikAablHak4IUWtc4rAxCTef5fuc"
 CHANNEL_ID = -1002930020998
-YOUR_ID = 631917030  # твой ID
-
-# Если нужно использовать прокси (только SOCKS5 или HTTP)
-# request = HTTPXRequest(proxy="socks5://ip:port")
-# application = Application.builder().token(TOKEN).request(request).build()
+EDITOR_ID = 217812453  # мой ID, теперь бот будет слушать меня
 
 application = Application.builder().token(TOKEN).build()
 
-async def echo_to_channel(update: Update, context):
-    user_id = update.effective_user.id
-    if user_id != YOUR_ID:
-        await update.message.reply_text("Доступ запрещён")
+async def publish_from_editor(update: Update, context):
+    # Проверяем, что сообщение пришло от меня
+    if update.effective_user.id != EDITOR_ID:
         return
-    # Пересылаем текст в канал
-    await context.bot.send_message(chat_id=CHANNEL_ID, text=update.message.text)
+    # Если это ответ на сообщение (можно игнорировать), или просто текст
+    if update.message.text:
+        await context.bot.send_message(chat_id=CHANNEL_ID, text=update.message.text)
 
 def main():
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo_to_channel))
-    print("Бот запущен")
+    # Слушаем все текстовые сообщения
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, publish_from_editor))
     application.run_polling()
 
 if __name__ == "__main__":
