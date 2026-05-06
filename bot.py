@@ -7,7 +7,7 @@ print("Бот запущен", file=sys.stderr)  # принудительный 
 
 TOKEN = "8452923553:AAFMZ1tNikAablHak4IUWtc4rAxCTef5fuc"
 CHANNEL_ID = -1002930020998
-EDITOR_ID = 217812453
+EDITOR_ID = 631917030
 
 application = Application.builder().token(TOKEN).build()
 
